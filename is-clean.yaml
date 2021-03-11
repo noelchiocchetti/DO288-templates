@@ -1,0 +1,13 @@
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+    labels:
+      app: quotesapi
+      app.kubernetes.io/component: quotesapi
+      app.kubernetes.io/instance: quotesapi
+    name: quotesapi
+  spec:
+    lookupPolicy:
+      local: false
+

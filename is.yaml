@@ -1,0 +1,86 @@
+apiVersion: v1
+items:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: "2021-03-10T14:35:27Z"
+    generation: 1
+    labels:
+      app: quotesapi
+      app.kubernetes.io/component: quotesapi
+      app.kubernetes.io/instance: quotesapi
+    managedFields:
+    - apiVersion: image.openshift.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:openshift.io/generated-by: {}
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/component: {}
+            f:app.kubernetes.io/instance: {}
+      manager: oc
+      operation: Update
+      time: "2021-03-10T14:35:27Z"
+    name: quotesapi
+    namespace: noel-chiocchetti-ch-ibm-com-quotes-dev
+    resourceVersion: "6440748"
+    selfLink: /apis/image.openshift.io/v1/namespaces/noel-chiocchetti-ch-ibm-com-quotes-dev/imagestreams/quotesapi
+    uid: 53fd6e2f-0dc7-409c-9bd3-92b9edb71467
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: image-registry.openshift-image-registry.svc:5000/noel-chiocchetti-ch-ibm-com-quotes-dev/quotesapi
+    publicDockerImageRepository: default-route-openshift-image-registry.apps.eu45.prod.nextcle.com/noel-chiocchetti-ch-ibm-com-quotes-dev/quotesapi
+    tags:
+    - items:
+      - created: "2021-03-10T14:36:03Z"
+        dockerImageReference: image-registry.openshift-image-registry.svc:5000/noel-chiocchetti-ch-ibm-com-quotes-dev/quotesapi@sha256:3e9df6b031d9950f24b52d768f9f8c0baf4af1460481b4291cf785557184fcef
+        generation: 1
+        image: sha256:3e9df6b031d9950f24b52d768f9f8c0baf4af1460481b4291cf785557184fcef
+      tag: latest
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/image.dockerRepositoryCheck: "2021-03-10T14:35:18Z"
+    creationTimestamp: "2021-03-10T14:35:18Z"
+    generation: 2
+    name: quotesdb
+    namespace: noel-chiocchetti-ch-ibm-com-quotes-dev
+    resourceVersion: "6440123"
+    selfLink: /apis/image.openshift.io/v1/namespaces/noel-chiocchetti-ch-ibm-com-quotes-dev/imagestreams/quotesdb
+    uid: f7231c8b-95df-4fb8-b23b-21f36062d74a
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: image-registry.openshift-image-registry.svc:5000/openshift/mysql:5.7
+      generation: 2
+      importPolicy: {}
+      name: "5.7"
+      referencePolicy:
+        type: Source
+  status:
+    dockerImageRepository: image-registry.openshift-image-registry.svc:5000/noel-chiocchetti-ch-ibm-com-quotes-dev/quotesdb
+    publicDockerImageRepository: default-route-openshift-image-registry.apps.eu45.prod.nextcle.com/noel-chiocchetti-ch-ibm-com-quotes-dev/quotesdb
+    tags:
+    - items:
+      - created: "2021-03-10T14:35:18Z"
+        dockerImageReference: image-registry.openshift-image-registry.svc:5000/openshift/mysql@sha256:9a781abe7581cc141e14a7e404ec34125b3e89c008b14f4e7b41e094fd3049fe
+        generation: 2
+        image: sha256:9a781abe7581cc141e14a7e404ec34125b3e89c008b14f4e7b41e094fd3049fe
+      tag: "5.7"
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

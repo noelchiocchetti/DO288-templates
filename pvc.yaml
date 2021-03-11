@@ -1,0 +1,80 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+      volume.beta.kubernetes.io/storage-provisioner: kubernetes.io/cinder
+      volume.kubernetes.io/selected-node: eu45-mcwc5-worker-wvttn
+    creationTimestamp: "2021-03-10T14:35:18Z"
+    finalizers:
+    - kubernetes.io/pvc-protection
+    managedFields:
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:accessModes: {}
+          f:resources:
+            f:requests:
+              .: {}
+              f:storage: {}
+          f:volumeMode: {}
+      manager: oc
+      operation: Update
+      time: "2021-03-10T14:35:18Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            f:pv.kubernetes.io/bind-completed: {}
+            f:pv.kubernetes.io/bound-by-controller: {}
+            f:volume.beta.kubernetes.io/storage-provisioner: {}
+        f:spec:
+          f:volumeName: {}
+        f:status:
+          f:accessModes: {}
+          f:capacity:
+            .: {}
+            f:storage: {}
+          f:phase: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: "2021-03-10T14:35:23Z"
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:volume.kubernetes.io/selected-node: {}
+      manager: kube-scheduler
+      operation: Update
+      time: "2021-03-10T14:35:23Z"
+    name: quotesdb-claim
+    namespace: noel-chiocchetti-ch-ibm-com-quotes-dev
+    resourceVersion: "6440202"
+    selfLink: /api/v1/namespaces/noel-chiocchetti-ch-ibm-com-quotes-dev/persistentvolumeclaims/quotesdb-claim
+    uid: 16946246-32f6-42a1-98b1-e9b864cfd2a4
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 300Mi
+    storageClassName: standard
+    volumeMode: Filesystem
+    volumeName: pvc-16946246-32f6-42a1-98b1-e9b864cfd2a4
+  status:
+    accessModes:
+    - ReadWriteOnce
+    capacity:
+      storage: 1Gi
+    phase: Bound
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""
