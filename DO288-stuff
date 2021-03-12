@@ -1,0 +1,168 @@
+https://rol.redhat.com/rol/app/courses/do288-4.5/pages/ch01s04
+noel.chiocchetti@ch.ibm.com
+H*F7hpGt-6yqe7sffUm@8
+
+
+GitHub
+noelchiocchetti
+zUyEt8ycWcPDF3[ojo@
+
+source /usr/local/etc/ocp4.config
+
+oc login -u ${RHT_OCP4_DEV_USER} \
+-p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+
+podman login -u ${RHT_OCP4_QUAY_USER} quay.io
+
+oc new-project ${RHT_OCP4_DEV_USER}-docker-build
+
+oc new-app --as-deployment-config --name greet \
+--build-env npm_config_registry=\
+http://${RHT_OCP4_NEXUS_SERVER}/repository/nodejs \
+nodejs:12~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#source-build \
+--context-dir nodejs-helloworld
+
+oc new-app --as-deployment-config --name echo \
+https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#docker-build \
+--context-dir ubi-echo
+
+oc new-app --as-deployment-config --name hook \
+php:7.3~http://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps \
+--context-dir post-commit
+
+oc new-app --as-deployment-config \
+--name probes --build-env \
+npm_config_registry=http://${RHT_OCP4_NEXUS_SERVER}/repository/nodejs \
+nodejs:12~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps \
+--context-dir probes
+
+oc new-app --as-deployment-config \
+--name bonjour \
+httpd:2.4~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps \
+--context-dir s2i-scripts
+
+
+curl http://hola-${RHT_OCP4_DEV_USER}-container-build.${RHT_OCP4_WILDCARD_DOMAIN}
+
+curl -X POST -k \
+${RHT_OCP4_MASTER_API}\
+/apis/build.openshift.io/v1/namespaces/${RHT_OCP4_DEV_USER}-build-app\
+/buildconfigs/simple/webhooks/DoSZR9rgk4QZPBn4potk/generic
+
+oc delete project ${RHT_OCP4_DEV_USER}-build-app
+
+oc new-app --as-deployment-config --name probes --build-env \
+npm_config_registry=http://${RHT_OCP4_NEXUS_SERVER}/repository/nodejs \
+nodejs:12~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps \
+--context-dir probes
+
+
+oc new-app --as-deployment-config --name myapp \
+--build-env npm_config_registry=\
+http://${RHT_OCP4_NEXUS_SERVER}/repository/nodejs \
+nodejs:12~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#app-config \
+--context-dir app-config
+
+oc create configmap myappconf --from-literal APP_MSG="Test Message"
+
+oc set volume dc/myapp --add \
+-t secret -m /opt/app-root/secure \
+--name myappsec-vol --secret-name myappfilesec
+
+skopeo copy \
+oci:/home/student/DO288/labs/external-registry/ubi-sleep \
+docker://quay.io/${RHT_OCP4_QUAY_USER}/ubi-sleep:1.0
+
+oc create secret generic quayio \
+--from-file .dockerconfigjson=${XDG_RUNTIME_DIR}/containers/auth.json \
+--type kubernetes.io/dockerconfigjson
+
+skopeo copy \
+--dest-creds=${RHT_OCP4_DEV_USER}:${TOKEN} \
+oci:/home/student/DO288/labs/expose-registry/ubi-info \
+docker://${INTERNAL_REGISTRY}/${RHT_OCP4_DEV_USER}-common/ubi-info:1.0
+
+skopeo copy \
+docker-archive:php-70-rhel7-original.tar.gz \
+docker://quay.io/${RHT_OCP4_QUAY_USER}/php-70-rhel7:latest
+
+oc create secret generic quay-registry \
+--from-file .dockerconfigjson=${XDG_RUNTIME_DIR}/containers/auth.json \
+--type kubernetes.io/dockerconfigjson
+
+oc new-app --as-deployment-config \
+--name trigger \
+php~http://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps \
+--context-dir trigger-builds
+
+oc new-app --as-deployment-config --name jhost \
+--build-env MAVEN_MIRROR_URL=http://${RHT_OCP4_NEXUS_SERVER}/repository/java \
+-i redhat-openjdk18-openshift:1.5 \
+https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#manage-builds \
+--context-dir java-serverhost
+
+oc new-app --as-deployment-config --name mysql \
+-e MYSQL_USER=test -e MYSQL_PASSWORD=redhat -e MYSQL_DATABASE=testdb \
+--docker-image registry.access.redhat.com/rhscl/mysql-57-rhel7 
+
+oc new-app --as-deployment-config --name quip \
+--build-env MAVEN_MIRROR_URL=http://${RHT_OCP4_NEXUS_SERVER}/repository/java \
+-i redhat-openjdk18-openshift:1.5 \
+https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#app-deploy \
+--context-dir quip
+
+oc set probe dc/probes --liveness \
+--get-url=http://:8080/healthz \
+--initial-delay-seconds=2 --timeout-seconds=2
+
+oc set probe dc/quip --liveness \
+--get-url=http://:8080/ready \
+--initial-delay-seconds=30 --timeout-seconds=2
+
+s2i build test/test-app/ \
+s2i-do288-httpd s2i-sample-app \
+--as-dockerfile ~/s2i-sample-Dockerfile/app
+
+sudo skopeo copy \
+containers-storage:localhost/s2i-do288-httpd \
+docker://quay.io/${RHT_OCP4_QUAY_USER}/s2i-do288-httpd
+
+oc create secret generic quayio \
+--from-file .dockerconfigjson=${XDG_RUNTIME_DIR}/containers/auth.json \
+--type=kubernetes.io/dockerconfigjson
+
+oc new-app --as-deployment-config --name hello-s2i s2i-do288-httpd~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps --context-dir=html-helloworld
+
+sudo podman rmi -f \
+localhost/s2i-sample-app \
+localhost/s2i-do288-httpd \
+registry.access.redhat.com/ubi8/ubi:8.0
+
+oc policy add-role-to-user \
+edit system:serviceaccount:${RHT_OCP4_DEV_USER}-ci-cd:jenkins \
+-n ${RHT_OCP4_DEV_USER}-simple-pipeline
+
+oc policy add-role-to-user \
+edit system:serviceaccount:${RHT_OCP4_DEV_USER}-ci-cd:jenkins \
+-n ${RHT_OCP4_DEV_USER}-books-dev
+
+oc policy add-role-to-user \
+edit system:serviceaccount:${RHT_OCP4_DEV_USER}-ci-cd:jenkins \
+-n ${RHT_OCP4_DEV_USER}-books-stage
+
+oc get route/books \
+-n ${RHT_OCP4_DEV_USER}-books-dev \
+-o jsonpath='{.spec.host}{"\n"}'
+
+sudo skopeo copy \
+containers-storage:localhost/nexus3 \
+docker://quay.io/${RHT_OCP4_QUAY_USER}/nexus3
+
+oc create secret generic quayio \
+--from-file .dockerconfigjson=${XDG_RUNTIME_DIR}/containers/auth.json \
+--type kubernetes.io/dockerconfigjson
+
+oc new-app --as-deployment-config --name nexus3 \
+-f ~/nexus-template.yaml \
+-p HOSTNAME=nexus-${RHT_OCP4_DEV_USER}.${RHT_OCP4_WILDCARD_DOMAIN}
+
